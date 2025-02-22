@@ -1,23 +1,35 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../styles/escort.css';
 
 function EscortPage() {
+  const location = useLocation();
+  // Always call hooks first
   const [selectedImage, setSelectedImage] = useState(0);
-  
-  const images = [
+
+  // Retrieve the model data from the router state
+  const model = location.state?.model;
+
+  // If model is not provided, display a fallback message.
+  if (!model) {
+    return <div>No model data found.</div>;
+  }
+
+  // Use the model's images if available, otherwise fallback to placeholder images.
+  const images = model.images && model.images.length ? model.images : [
     "https://placehold.co/400x600",
     "https://placehold.co/400x600", 
     "https://placehold.co/400x600",
     "https://placehold.co/400x600"
   ];
-
+  
   return (
     <div className="escort-page">
       <div className="escort-profile">
         <div className="image-gallery">
           <img 
             src={images[selectedImage]} 
-            alt="Model" 
+            alt={model.name} 
             className="main-image"
           />
           <div className="thumbnail-strip">
@@ -34,38 +46,33 @@ function EscortPage() {
         </div>
 
         <div className="escort-details">
-          <h1>Nakato</h1>
+          <h1>{model.name}</h1>
           <div className="basic-info">
-            <p>Age: 23 years</p>
-            <p>Location: Ntinda, Kampala</p>
-            <p>Phone: +256 700 123456</p>
+            <p>Age: {model.age} years</p>
+            <p>Location: {model.location}</p>
+            <p>Phone: {model.phone}</p>
           </div>
 
           <div className="description">
             <h2>About Me</h2>
-            <p>
-              I am a charming and sophisticated companion offering an unforgettable experience. 
-              I pride myself on being well-educated, articulate, and the perfect company for any occasion.
-            </p>
+            <p>{model.description}</p>
           </div>
 
           <div className="hobbies">
             <h2>Hobbies</h2>
             <ul>
-              <li>Swimming</li>
-              <li>Dancing</li>
-              <li>Fine Dining</li>
-              <li>Traveling</li>
+              {model.hobbies.map((hobby, index) => (
+                <li key={index}>{hobby}</li>
+              ))}
             </ul>
           </div>
 
           <div className="services">
             <h2>Services Offered</h2>
             <ul>
-              <li>Dinner Dates</li>
-              <li>Social Events</li>
-              <li>Travel Companion</li>
-              <li>Private Meetings</li>
+              {model.services.map((service, index) => (
+                <li key={index}>{service}</li>
+              ))}
             </ul>
           </div>
 
